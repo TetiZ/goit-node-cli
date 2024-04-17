@@ -51,3 +51,6 @@ export async function addContact(name, email, phone) {
     throw e;
   }
 }
+
+const result = await addContact("a", "b", "c");
+console.log(result);
