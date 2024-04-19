@@ -17,19 +17,23 @@ async function invokeAction({ action, id, name, email, phone }) {
   switch (action) {
     case "list":
       const contacts = await contactsFunc.listContacts();
-      return contacts;
+      console.log(contacts);
+      break;
 
     case "get":
       const contact = await contactsFunc.getContactById(id);
-      return contact;
+      console.log(contact);
+      break;
 
     case "add":
       const newContact = await contactsFunc.addContact(name, email, phone);
-      return newContact;
+      console.log(newContact);
+      break;
 
     case "remove":
       const removeContact = await contactsFunc.removeContact(id);
-      return removeContact;
+      console.log(removeContact);
+      break;
 
     default:
       console.warn("\x1B[31m Unknown action type!");
