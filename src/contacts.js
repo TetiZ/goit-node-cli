@@ -1,10 +1,10 @@
-import { nanoid } from "nanoid";
-import fs from "node:fs/promises";
+import crypto from "node:crypto";
+import * as fs from "node:fs/promises";
 import path from "path";
 
 const contactsPath = path.resolve("db", "contacts.json");
 
-export async function listContacts() {
+async function listContacts() {
   try {
     const data = await fs.readFile(contactsPath, { encoding: "utf-8" });
     const contacts = JSON.parse(data);
@@ -14,17 +14,20 @@ export async function listContacts() {
   }
 }
 
-export async function getContactById(contactId) {
+async function getContactById(contactId) {
   try {
     const contacts = await listContacts();
     const foundContact = contacts.find((contact) => contact.id === contactId);
-    return foundContact || null;
+    if (typeof foundContact === undefined) {
+      return null;
+    }
+    return foundContact;
   } catch (e) {
     throw e;
   }
 }
 
-export async function removeContact(contactId) {
+async function removeContact(contactId) {
   try {
     const contacts = await listContacts();
     const contactToRemove = await getContactById(contactId);
@@ -39,18 +42,17 @@ export async function removeContact(contactId) {
   }
 }
 
-export async function addContact(name, email, phone) {
+async function addContact(name, email, phone) {
   try {
     const contacts = await listContacts();
-    const newContact = { id: nanoid(), name, email, phone };
+    const newContact = { id: crypto.randomUUID(), name, email, phone };
 
     contacts.push(newContact);
-    await fs.writeFile(contactsPath, JSON.stringify(contacts));
+    await fs.writeFile(contactsPath, JSON.stringify(contacts, undefined, 2));
     return newContact;
   } catch (e) {
     throw e;
   }
 }
 
-const result = await addContact("a", "b", "c");
-console.log(result);
+export default { listContacts, getContactById, removeContact, addContact };
